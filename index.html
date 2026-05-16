@@ -17,144 +17,181 @@
       background: #c0392b;
       color: white;
       text-align: center;
-      padding: 20px;
+      padding: 30px 20px;
     }
 
-    .header h1 { font-size: 22px; }
-    .header p { font-size: 13px; margin-top: 5px; opacity: 0.85; }
+    .header h1 { font-size: 24px; font-weight: bold; }
+    .header p { font-size: 14px; margin-top: 6px; opacity: 0.85; }
 
     .card {
       background: white;
       margin: 20px 16px;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
     .card h2 {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .form-group { margin-bottom: 16px; }
-
-    label {
-      display: block;
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
       font-size: 15px;
+      color: #888;
+      margin-bottom: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* 전화번호 입력 */
+    .phone-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phone-prefix {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .phone-dash {
+      font-size: 22px;
+      color: #aaa;
+    }
+
+    .phone-input {
+      flex: 1;
+      border: none;
+      border-bottom: 2px solid #c0392b;
+      border-radius: 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      padding: 6px 4px;
+      text-align: center;
+      letter-spacing: 2px;
       outline: none;
+      background: transparent;
     }
 
-    input:focus, textarea:focus {
-      border-color: #c0392b;
+    .phone-input::placeholder {
+      color: #ddd;
+      font-weight: normal;
+      letter-spacing: 0;
     }
 
+    /* 인원 카운터 */
     .counter-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0f0f0;
     }
 
-    .counter-label { font-size: 14px; color: #444; }
+    .counter-row:last-child { border-bottom: none; }
+
+    .counter-label {
+      font-size: 17px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .counter-sub {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 2px;
+    }
 
     .counter-box {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 20px;
     }
 
     .counter-btn {
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       border: 2px solid #c0392b;
       background: white;
       color: #c0392b;
-      font-size: 20px;
+      font-size: 24px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      line-height: 1;
     }
 
+    .counter-btn:active { background: #fdf0ef; }
+
     .counter-num {
-      font-size: 18px;
+      font-size: 26px;
       font-weight: bold;
-      min-width: 24px;
+      color: #333;
+      min-width: 30px;
       text-align: center;
     }
 
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .checkbox-item input { width: auto; }
-
+    /* 등록 버튼 */
     .submit-btn {
       width: calc(100% - 32px);
-      margin: 0 16px 30px;
-      padding: 16px;
+      margin: 8px 16px 40px;
+      padding: 18px;
       background: #c0392b;
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 17px;
+      border-radius: 14px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
+      letter-spacing: 1px;
     }
 
     .submit-btn:active { background: #a93226; }
 
+    /* 완료 화면 */
     .success-box {
       display: none;
       background: white;
-      margin: 20px 16px;
-      border-radius: 12px;
-      padding: 30px 20px;
+      margin: 30px 16px;
+      border-radius: 16px;
+      padding: 40px 20px;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
-    .success-box .number {
-      font-size: 60px;
+    .success-emoji { font-size: 50px; }
+
+    .success-number {
+      font-size: 80px;
       font-weight: bold;
       color: #c0392b;
+      line-height: 1.1;
+      margin: 10px 0;
     }
 
-    .success-box p {
-      font-size: 15px;
-      color: #555;
-      margin-top: 10px;
-      line-height: 1.6;
+    .success-label {
+      font-size: 20px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .success-desc {
+      font-size: 14px;
+      color: #888;
+      margin-top: 16px;
+      line-height: 1.8;
+    }
+
+    .success-info {
+      background: #fdf0ef;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #c0392b;
     }
   </style>
 </head>
@@ -165,28 +202,30 @@
     <p>웨이팅 등록</p>
   </div>
 
-  <!-- 등록 폼 -->
+  <!-- 입력 폼 -->
   <div id="formArea">
 
     <div class="card">
-      <h2>👤 기본 정보</h2>
-
-      <div class="form-group">
-        <label>이름</label>
-        <input type="text" id="name" placeholder="예) 홍길동">
-      </div>
-
-      <div class="form-group">
-        <label>전화번호</label>
-        <input type="tel" id="phone" placeholder="예) 010-1234-5678">
+      <h2>전화번호</h2>
+      <div class="phone-row">
+        <span class="phone-prefix">010</span>
+        <span class="phone-dash">-</span>
+        <input class="phone-input" type="tel" id="phone1"
+          maxlength="4" placeholder="0000"
+          oninput="moveNext(this, 'phone2')">
+        <span class="phone-dash">-</span>
+        <input class="phone-input" type="tel" id="phone2"
+          maxlength="4" placeholder="0000">
       </div>
     </div>
 
     <div class="card">
-      <h2>👥 인원 수</h2>
+      <h2>인원 수</h2>
 
       <div class="counter-row">
-        <span class="counter-label">성인</span>
+        <div>
+          <div class="counter-label">성인</div>
+        </div>
         <div class="counter-box">
           <button class="counter-btn" onclick="change('adult', -1)">−</button>
           <span class="counter-num" id="adult">1</span>
@@ -195,7 +234,10 @@
       </div>
 
       <div class="counter-row">
-        <span class="counter-label">아이 (12세 이하)</span>
+        <div>
+          <div class="counter-label">아이</div>
+          <div class="counter-sub">12세 이하</div>
+        </div>
         <div class="counter-box">
           <button class="counter-btn" onclick="change('child', -1)">−</button>
           <span class="counter-num" id="child">0</span>
@@ -204,45 +246,20 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2>📝 요청사항</h2>
-
-      <div class="form-group">
-        <label>필요한 것을 선택하세요</label>
-        <div class="checkbox-group">
-          <label class="checkbox-item">
-            <input type="checkbox" value="테이블 2개"> 테이블 2개
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" value="테이블 3개"> 테이블 3개
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" value="유아의자"> 유아의자
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" value="단체석"> 단체석
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>기타 요청사항</label>
-        <textarea id="memo" rows="3" placeholder="기타 요청사항을 입력하세요"></textarea>
-      </div>
-    </div>
-
     <button class="submit-btn" onclick="submitWaiting()">웨이팅 등록하기</button>
 
   </div>
 
-  <!-- 등록 완료 화면 -->
+  <!-- 완료 화면 -->
   <div class="success-box" id="successArea">
-    <div>🎉</div>
-    <div class="number" id="waitingNumber">-</div>
-    <p>번째 웨이팅이 등록되었습니다.<br>차례가 되면 알림을 보내드릴게요!</p>
-    <p style="margin-top:16px; font-size:13px; color:#999;">
-      알림을 받으려면 브라우저를 닫지 마세요.
-    </p>
+    <div class="success-emoji">🎉</div>
+    <div class="success-number" id="waitingNumber">-</div>
+    <div class="success-label">번째 웨이팅</div>
+    <div class="success-desc">
+      차례가 되면 알림을 보내드립니다.<br>
+      잠시만 기다려 주세요!
+    </div>
+    <div class="success-info" id="successInfo"></div>
   </div>
 
   <!-- Firebase SDK -->
@@ -251,6 +268,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
   <script>
+    // Firebase 초기화
     const firebaseConfig = {
       apiKey: "AIzaSyA1Yvnrp5aLoMkYsDK5luVByDVXnqTLi3E",
       authDomain: "qr-code-waiting.firebaseapp.com",
@@ -265,10 +283,18 @@
     const messaging = firebase.messaging();
 
     let pushToken = "";
-
-    // 인원 수 카운터
     const counts = { adult: 1, child: 0 };
 
+    // 전화번호 앞칸 4자리 입력 후 자동으로 뒷칸으로 이동
+    // = 손님이 4자리 누르면 커서가 자동으로 다음 칸으로 넘어감
+    function moveNext(el, nextId) {
+      if (el.value.length === 4) {
+        document.getElementById(nextId).focus();
+      }
+    }
+
+    // 인원 수 +/- 버튼
+    // = 버튼 누를 때마다 숫자가 올라가거나 내려감
     function change(type, delta) {
       counts[type] = Math.max(0, counts[type] + delta);
       if (type === 'adult') counts[type] = Math.max(1, counts[type]);
@@ -276,6 +302,7 @@
     }
 
     // 푸시 알림 초기화
+    // = 손님 폰에 알림 보낼 수 있도록 준비하는 과정
     async function initPush() {
       try {
         if (!("Notification" in window)) return;
@@ -291,44 +318,47 @@
     }
 
     // 웨이팅 등록
+    // = 손님이 입력한 정보를 Firebase(구글 서버)에 저장하는 과정
     async function submitWaiting() {
-      alert("버튼 클릭됨!");
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const memo = document.getElementById("memo").value.trim();
+      const phone1 = document.getElementById("phone1").value.trim();
+      const phone2 = document.getElementById("phone2").value.trim();
 
-      // 체크박스 선택 항목
-      const checked = [...document.querySelectorAll(".checkbox-item input:checked")]
-        .map(el => el.value);
-      const requests = checked.join(", ") + (memo ? " / " + memo : "");
+      // 전화번호 확인
+      // = 4자리씩 두 칸이 다 채워졌는지 확인
+      if (phone1.length !== 4 || phone2.length !== 4) {
+        alert("전화번호를 모두 입력해주세요.");
+        return;
+      }
 
-      if (!name) { alert("이름을 입력해주세요."); return; }
-      if (!phone) { alert("전화번호를 입력해주세요."); return; }
+      const fullPhone = "010-" + phone1 + "-" + phone2;
 
       try {
-        // 현재 대기 인원 수 확인
+        // 현재 대기 번호 계산
+        // = 지금 몇 번째 웨이팅인지 숫자 구하기
         const snapshot = await db.collection("waiting")
           .where("status", "==", "waiting")
           .get();
         const waitingNumber = snapshot.size + 1;
 
         // Firestore에 저장
+        // = 손님 정보를 구글 서버 창고에 넣기
         await db.collection("waiting").add({
-          name: name,
-          phone: phone,
+          phone: fullPhone,
           adult: counts.adult,
           child: counts.child,
-          requests: requests,
           pushToken: pushToken,
           status: "waiting",
           number: waitingNumber,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // 완료 화면 표시
+        // 완료 화면으로 전환
         document.getElementById("formArea").style.display = "none";
         document.getElementById("successArea").style.display = "block";
         document.getElementById("waitingNumber").innerText = waitingNumber;
+        document.getElementById("successInfo").innerText =
+          "📞 " + fullPhone + "  👥 성인 " + counts.adult + "명" +
+          (counts.child > 0 ? " / 아이 " + counts.child + "명" : "");
 
       } catch (e) {
         alert("등록 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -336,12 +366,14 @@
       }
     }
 
-    // 포그라운드 알림
+    // 포그라운드 알림 처리
+    // = 앱 켜져 있을 때 알림 받는 부분
     messaging.onMessage((payload) => {
       alert("📢 " + payload.notification.title + "\n" + payload.notification.body);
     });
 
     // 서비스 워커 등록
+    // = 앱 꺼져 있어도 백그라운드에서 알림 받도록 준비
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
