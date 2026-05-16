@@ -3,103 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>막창도둑 웨이팅</title>
+  <title>막창도둑 수변공원점 웨이팅</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Apple SD Gothic Neo', sans-serif;
-      background: #f5f5f5;
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #ffffff;
       min-height: 100vh;
+      color: #1a1a1a;
     }
 
+    /* 상단 헤더 */
     .header {
-      background: #c0392b;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
+      padding: 48px 24px 32px;
+      border-bottom: 1px solid #f0f0f0;
     }
 
-    .header h1 { font-size: 24px; font-weight: bold; }
-    .header p { font-size: 14px; margin-top: 6px; opacity: 0.85; }
-
-    .card {
-      background: white;
-      margin: 20px 16px;
-      border-radius: 16px;
-      padding: 24px 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    .header-sub {
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
 
-    .card h2 {
-      font-size: 15px;
-      color: #888;
+    .header-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.5px;
+    }
+
+    .header-desc {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    /* 섹션 */
+    .section {
+      padding: 28px 24px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #999;
+      letter-spacing: 2px;
+      text-transform: uppercase;
       margin-bottom: 16px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
     }
 
     /* 전화번호 입력 */
-    .phone-row {
+    .phone-wrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 0;
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 8px;
     }
 
     .phone-prefix {
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
-      white-space: nowrap;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-right: 8px;
     }
 
     .phone-dash {
       font-size: 22px;
-      color: #aaa;
+      color: #ccc;
+      margin: 0 8px;
     }
 
     .phone-input {
       flex: 1;
       border: none;
-      border-bottom: 2px solid #c0392b;
-      border-radius: 0;
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
-      padding: 6px 4px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a1a;
       text-align: center;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       outline: none;
       background: transparent;
+      padding: 0;
     }
 
     .phone-input::placeholder {
-      color: #ddd;
-      font-weight: normal;
-      letter-spacing: 0;
+      color: #e0e0e0;
+      font-weight: 400;
+      letter-spacing: 1px;
     }
 
     /* 인원 카운터 */
+    .counter-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     .counter-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid #f0f0f0;
     }
 
-    .counter-row:last-child { border-bottom: none; }
+    .counter-info {}
 
-    .counter-label {
-      font-size: 17px;
-      color: #333;
+    .counter-name {
+      font-size: 16px;
       font-weight: 600;
+      color: #1a1a1a;
     }
 
     .counter-sub {
       font-size: 12px;
-      color: #aaa;
-      margin-top: 2px;
+      color: #bbb;
+      margin-top: 3px;
     }
 
     .counter-box {
@@ -109,155 +131,180 @@
     }
 
     .counter-btn {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      border: 2px solid #c0392b;
+      border: 1.5px solid #1a1a1a;
       background: white;
-      color: #c0392b;
-      font-size: 24px;
+      color: #1a1a1a;
+      font-size: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
+      font-weight: 400;
       line-height: 1;
+      transition: all 0.15s;
     }
 
-    .counter-btn:active { background: #fdf0ef; }
+    .counter-btn:active {
+      background: #1a1a1a;
+      color: white;
+    }
 
     .counter-num {
-      font-size: 26px;
-      font-weight: bold;
-      color: #333;
-      min-width: 30px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      min-width: 28px;
       text-align: center;
     }
 
     /* 등록 버튼 */
+    .submit-wrap {
+      padding: 24px;
+    }
+
     .submit-btn {
-      width: calc(100% - 32px);
-      margin: 8px 16px 40px;
+      width: 100%;
       padding: 18px;
-      background: #c0392b;
+      background: #1a1a1a;
       color: white;
       border: none;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: bold;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      transition: background 0.15s;
     }
 
-    .submit-btn:active { background: #a93226; }
+    .submit-btn:active { background: #333; }
 
     /* 완료 화면 */
-    .success-box {
+    .success-wrap {
       display: none;
-      background: white;
-      margin: 30px 16px;
-      border-radius: 16px;
-      padding: 40px 20px;
+      padding: 60px 24px;
       text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-
-    .success-emoji { font-size: 50px; }
 
     .success-number {
-      font-size: 80px;
-      font-weight: bold;
-      color: #c0392b;
-      line-height: 1.1;
-      margin: 10px 0;
+      font-size: 88px;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1;
+      letter-spacing: -4px;
     }
 
-    .success-label {
-      font-size: 20px;
-      color: #333;
+    .success-unit {
+      font-size: 18px;
       font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 4px;
     }
 
-    .success-desc {
-      font-size: 14px;
-      color: #888;
-      margin-top: 16px;
+    .success-divider {
+      width: 40px;
+      height: 2px;
+      background: #1a1a1a;
+      margin: 24px auto;
+    }
+
+    .success-msg {
+      font-size: 15px;
+      color: #666;
       line-height: 1.8;
     }
 
     .success-info {
-      background: #fdf0ef;
+      margin-top: 32px;
+      padding: 16px 20px;
+      background: #f8f8f8;
       border-radius: 10px;
-      padding: 14px;
-      margin-top: 20px;
       font-size: 14px;
-      color: #c0392b;
+      color: #555;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .success-info span {
+      display: block;
     }
   </style>
 </head>
 <body>
 
+  <!-- 헤더 -->
   <div class="header">
-    <h1>🔥 막창도둑</h1>
-    <p>웨이팅 등록</p>
+    <div class="header-sub">Waiting</div>
+    <div class="header-title">막창도둑 수변공원점</div>
+    <div class="header-desc">웨이팅 등록을 해주세요</div>
   </div>
 
   <!-- 입력 폼 -->
   <div id="formArea">
 
-    <div class="card">
-      <h2>전화번호</h2>
-      <div class="phone-row">
+    <!-- 전화번호 -->
+    <div class="section">
+      <div class="section-label">전화번호</div>
+      <div class="phone-wrap">
         <span class="phone-prefix">010</span>
-        <span class="phone-dash">-</span>
+        <span class="phone-dash">—</span>
         <input class="phone-input" type="tel" id="phone1"
           maxlength="4" placeholder="0000"
           oninput="moveNext(this, 'phone2')">
-        <span class="phone-dash">-</span>
+        <span class="phone-dash">—</span>
         <input class="phone-input" type="tel" id="phone2"
           maxlength="4" placeholder="0000">
       </div>
     </div>
 
-    <div class="card">
-      <h2>인원 수</h2>
+    <!-- 인원 수 -->
+    <div class="section">
+      <div class="section-label">인원 수</div>
+      <div class="counter-wrap">
 
-      <div class="counter-row">
-        <div>
-          <div class="counter-label">성인</div>
+        <div class="counter-row">
+          <div class="counter-info">
+            <div class="counter-name">성인</div>
+          </div>
+          <div class="counter-box">
+            <button class="counter-btn" onclick="change('adult', -1)">−</button>
+            <span class="counter-num" id="adult">1</span>
+            <button class="counter-btn" onclick="change('adult', 1)">+</button>
+          </div>
         </div>
-        <div class="counter-box">
-          <button class="counter-btn" onclick="change('adult', -1)">−</button>
-          <span class="counter-num" id="adult">1</span>
-          <button class="counter-btn" onclick="change('adult', 1)">+</button>
-        </div>
-      </div>
 
-      <div class="counter-row">
-        <div>
-          <div class="counter-label">아이</div>
-          <div class="counter-sub">12세 이하</div>
+        <div class="counter-row">
+          <div class="counter-info">
+            <div class="counter-name">아이</div>
+            <div class="counter-sub">12세 이하</div>
+          </div>
+          <div class="counter-box">
+            <button class="counter-btn" onclick="change('child', -1)">−</button>
+            <span class="counter-num" id="child">0</span>
+            <button class="counter-btn" onclick="change('child', 1)">+</button>
+          </div>
         </div>
-        <div class="counter-box">
-          <button class="counter-btn" onclick="change('child', -1)">−</button>
-          <span class="counter-num" id="child">0</span>
-          <button class="counter-btn" onclick="change('child', 1)">+</button>
-        </div>
+
       </div>
     </div>
 
-    <button class="submit-btn" onclick="submitWaiting()">웨이팅 등록하기</button>
+    <!-- 등록 버튼 -->
+    <div class="submit-wrap">
+      <button class="submit-btn" onclick="submitWaiting()">웨이팅 등록</button>
+    </div>
 
   </div>
 
   <!-- 완료 화면 -->
-  <div class="success-box" id="successArea">
-    <div class="success-emoji">🎉</div>
+  <div class="success-wrap" id="successArea">
     <div class="success-number" id="waitingNumber">-</div>
-    <div class="success-label">번째 웨이팅</div>
-    <div class="success-desc">
-      차례가 되면 알림을 보내드립니다.<br>
-      잠시만 기다려 주세요!
+    <div class="success-unit">번째 웨이팅</div>
+    <div class="success-divider"></div>
+    <div class="success-msg">
+      차례가 되면 연락드리겠습니다.<br>
+      잠시만 기다려 주세요.
     </div>
     <div class="success-info" id="successInfo"></div>
   </div>
@@ -268,7 +315,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
   <script>
-    // Firebase 초기화
     const firebaseConfig = {
       apiKey: "AIzaSyA1Yvnrp5aLoMkYsDK5luVByDVXnqTLi3E",
       authDomain: "qr-code-waiting.firebaseapp.com",
@@ -286,7 +332,6 @@
     const counts = { adult: 1, child: 0 };
 
     // 전화번호 앞칸 4자리 입력 후 자동으로 뒷칸으로 이동
-    // = 손님이 4자리 누르면 커서가 자동으로 다음 칸으로 넘어감
     function moveNext(el, nextId) {
       if (el.value.length === 4) {
         document.getElementById(nextId).focus();
@@ -294,7 +339,6 @@
     }
 
     // 인원 수 +/- 버튼
-    // = 버튼 누를 때마다 숫자가 올라가거나 내려감
     function change(type, delta) {
       counts[type] = Math.max(0, counts[type] + delta);
       if (type === 'adult') counts[type] = Math.max(1, counts[type]);
@@ -302,7 +346,6 @@
     }
 
     // 푸시 알림 초기화
-    // = 손님 폰에 알림 보낼 수 있도록 준비하는 과정
     async function initPush() {
       try {
         if (!("Notification" in window)) return;
@@ -318,13 +361,10 @@
     }
 
     // 웨이팅 등록
-    // = 손님이 입력한 정보를 Firebase(구글 서버)에 저장하는 과정
     async function submitWaiting() {
       const phone1 = document.getElementById("phone1").value.trim();
       const phone2 = document.getElementById("phone2").value.trim();
 
-      // 전화번호 확인
-      // = 4자리씩 두 칸이 다 채워졌는지 확인
       if (phone1.length !== 4 || phone2.length !== 4) {
         alert("전화번호를 모두 입력해주세요.");
         return;
@@ -333,15 +373,11 @@
       const fullPhone = "010-" + phone1 + "-" + phone2;
 
       try {
-        // 현재 대기 번호 계산
-        // = 지금 몇 번째 웨이팅인지 숫자 구하기
         const snapshot = await db.collection("waiting")
           .where("status", "==", "waiting")
           .get();
         const waitingNumber = snapshot.size + 1;
 
-        // Firestore에 저장
-        // = 손님 정보를 구글 서버 창고에 넣기
         await db.collection("waiting").add({
           phone: fullPhone,
           adult: counts.adult,
@@ -352,13 +388,13 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // 완료 화면으로 전환
         document.getElementById("formArea").style.display = "none";
         document.getElementById("successArea").style.display = "block";
         document.getElementById("waitingNumber").innerText = waitingNumber;
-        document.getElementById("successInfo").innerText =
-          "📞 " + fullPhone + "  👥 성인 " + counts.adult + "명" +
-          (counts.child > 0 ? " / 아이 " + counts.child + "명" : "");
+        document.getElementById("successInfo").innerHTML =
+          "<span>📞 " + fullPhone + "</span>" +
+          "<span>👥 성인 " + counts.adult + "명" +
+          (counts.child > 0 ? " / 아이 " + counts.child + "명" : "") + "</span>";
 
       } catch (e) {
         alert("등록 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -366,14 +402,10 @@
       }
     }
 
-    // 포그라운드 알림 처리
-    // = 앱 켜져 있을 때 알림 받는 부분
     messaging.onMessage((payload) => {
       alert("📢 " + payload.notification.title + "\n" + payload.notification.body);
     });
 
-    // 서비스 워커 등록
-    // = 앱 꺼져 있어도 백그라운드에서 알림 받도록 준비
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
