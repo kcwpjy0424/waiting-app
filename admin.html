@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>막창도둑 - 사장님 화면</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #2c3e50;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 { font-size: 18px; }
+
+    .badge {
+      background: #c0392b;
+      color: white;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .summary {
+      background: white;
+      margin: 16px;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .summary-item {
+      text-align: center;
+    }
+
+    .summary-num {
+      font-size: 32px;
+      font-weight: bold;
+      color: #c0392b;
+    }
+
+    .summary-label {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: #888;
+      font-weight: 600;
+      padding: 0 16px;
+      margin-bottom: 8px;
+    }
+
+    .waiting-card {
+      background: white;
+      margin: 0 16px 12px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .waiting-card.called {
+      border-left: 4px solid #e67e22;
+      opacity: 0.85;
+    }
+
+    .card-left { flex: 1; }
+
+    .card-number {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .card-phone {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .card-people {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .card-status {
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .card-status.waiting { color: #27ae60; }
+    .card-status.called { color: #e67e22; }
+
+    .card-right {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 12px;
+    }
+
+    .btn-call {
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-call:active { background: #a93226; }
+
+    .btn-done {
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-done:active { background: #1e8449; }
+
+    .btn-cancel {
+      background: #95a5a6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+      font-size: 16px;
+    }
+
+    .empty-emoji { font-size: 50px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🔥 막창도둑 대기 현황</h1>
+    <span class="badge" id="totalBadge">0팀 대기</span>
+  </div>
+
+  <!-- 요약 현황 -->
+  <div class="summary">
+    <div class="summary-item">
+      <div class="summary-num" id="waitingCount">0</div>
+      <div class="summary-label">대기중</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-num" id="calledCount">0</div>
+      <div class="summary-label">호출됨</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-num" id="totalPeople">0</div>
+      <div class="summary-label">총 인원</div>
+    </div>
+  </div>
+
+  <!-- 대기 목록 -->
+  <div class="section-title">대기 목록</div>
+  <div id="waitingList">
+    <div class="empty">
+      <div class="empty-emoji">😊</div>
+      <div>현재 대기 손님이 없습니다</div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1Yvnrp5aLoMkYsDK5luVByDVXnqTLi3E",
+      authDomain: "qr-code-waiting.firebaseapp.com",
+      projectId: "qr-code-waiting",
+      storageBucket: "qr-code-waiting.firebasestorage.app",
+      messagingSenderId: "464431670960",
+      appId: "1:464431670960:web:2aaf2f8fb5b3e7ac107d75"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // 실시간으로 대기 목록 불러오기
+    // = Firebase에서 새 손님이 등록되면 자동으로 화면에 나타남
+    db.collection("waiting")
+      .where("status", "in", ["waiting", "called"])
+      .orderBy("createdAt", "asc")
+      .onSnapshot((snapshot) => {
+        const list = [];
+        snapshot.forEach(doc => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        renderList(list);
+      });
+
+    // 화면에 대기 목록 그리기
+    function renderList(list) {
+      const waitingCount = list.filter(i => i.status === "waiting").length;
+      const calledCount = list.filter(i => i.status === "called").length;
+      const totalPeople = list.reduce((sum, i) => sum + (i.adult || 0) + (i.child || 0), 0);
+
+      document.getElementById("totalBadge").innerText = list.length + "팀 대기";
+      document.getElementById("waitingCount").innerText = waitingCount;
+      document.getElementById("calledCount").innerText = calledCount;
+      document.getElementById("totalPeople").innerText = totalPeople;
+
+      const container = document.getElementById("waitingList");
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty">
+            <div class="empty-emoji">😊</div>
+            <div>현재 대기 손님이 없습니다</div>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => `
+        <div class="waiting-card ${item.status === 'called' ? 'called' : ''}">
+          <div class="card-left">
+            <div class="card-number">${item.number}번째 웨이팅</div>
+            <div class="card-phone">${item.phone}</div>
+            <div class="card-people">
+              성인 ${item.adult}명
+              ${item.child > 0 ? ' / 아이 ' + item.child + '명' : ''}
+            </div>
+            <div class="card-status ${item.status}">
+              ${item.status === 'waiting' ? '● 대기중' : '● 호출됨'}
+            </div>
+          </div>
+          <div class="card-right">
+            ${item.status === 'waiting' ? `
+              <button class="btn-call" onclick="callCustomer('${item.id}', '${item.phone}')">
+                📢 호출
+              </button>
+            ` : `
+              <button class="btn-done" onclick="doneCustomer('${item.id}')">
+                ✅ 완료
+              </button>
+              <button class="btn-cancel" onclick="cancelCall('${item.id}')">
+                되돌리기
+              </button>
+            `}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 호출 버튼
+    // = 손님한테 알림 보내고 상태를 "호출됨"으로 바꾸기
+    async function callCustomer(id, phone) {
+      if (!confirm(phone + " 손님을 호출할까요?")) return;
+      await db.collection("waiting").doc(id).update({
+        status: "called",
+        calledAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("📢 호출했습니다!\n손님: " + phone);
+    }
+
+    // 완료 버튼
+    // = 손님 도착 확인 후 목록에서 제거
+    async function doneCustomer(id) {
+      if (!confirm("입장 완료 처리할까요?")) return;
+      await db.collection("waiting").doc(id).update({
+        status: "done",
+        doneAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    // 되돌리기 버튼
+    // = 실수로 호출했을 때 대기중으로 되돌리기
+    async function cancelCall(id) {
+      await db.collection("waiting").doc(id).update({
+        status: "waiting"
+      });
+    }
+  </script>
+
+</body>
+</html>
