@@ -43,7 +43,9 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .summary-item { text-align: center; }
+    .summary-item {
+      text-align: center;
+    }
 
     .summary-num {
       font-size: 32px;
@@ -168,6 +170,14 @@
     }
 
     .empty-emoji { font-size: 50px; margin-bottom: 12px; }
+
+    /* 알림톡 전송 중 로딩 표시 */
+    .alimtalk-sending {
+      font-size: 11px;
+      color: #e67e22;
+      margin-top: 4px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -177,6 +187,7 @@
     <span class="badge" id="totalBadge">0팀 대기</span>
   </div>
 
+  <!-- 요약 현황 -->
   <div class="summary">
     <div class="summary-item">
       <div class="summary-num" id="waitingCount">0</div>
@@ -192,6 +203,7 @@
     </div>
   </div>
 
+  <!-- 대기 목록 -->
   <div class="section-title">대기 목록</div>
   <div id="waitingList">
     <div class="empty">
@@ -200,6 +212,7 @@
     </div>
   </div>
 
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
@@ -216,6 +229,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // 실시간으로 대기 목록 불러오기
     db.collection("waiting")
       .where("status", "in", ["waiting", "called"])
       .orderBy("createdAt", "asc")
@@ -227,12 +241,13 @@
         renderList(list);
       });
 
+    // 화면에 대기 목록 그리기
     function renderList(list) {
       const waitingCount = list.filter(i => i.status === "waiting").length;
       const calledCount  = list.filter(i => i.status === "called").length;
       const totalPeople  = list.reduce((sum, i) => sum + (i.adult || 0) + (i.child || 0), 0);
 
-      document.getElementById("totalBadge").innerText   = list.length + "팀 대기";
+      document.getElementById("totalBadge").innerText  = list.length + "팀 대기";
       document.getElementById("waitingCount").innerText = waitingCount;
       document.getElementById("calledCount").innerText  = calledCount;
       document.getElementById("totalPeople").innerText  = totalPeople;
@@ -248,6 +263,7 @@
         return;
       }
 
+      // ★ 호출 버튼에 item.number 추가 (알림톡에 대기번호 전달용)
       container.innerHTML = list.map(item => `
         <div class="waiting-card ${item.status === 'called' ? 'called' : ''}">
           <div class="card-left">
@@ -282,15 +298,20 @@
       `).join('');
     }
 
+    // ================================================
+    // 호출 버튼 - 카카오 알림톡 발송 포함
+    // ================================================
     async function callCustomer(id, phone, number) {
       if (!confirm(phone + " 손님을 호출할까요?\n카카오 알림톡이 발송됩니다.")) return;
 
+      // 버튼 비활성화 (중복 클릭 방지)
       const btn = document.getElementById('btn-' + id);
       if (btn) {
         btn.disabled = true;
         btn.innerText = '전송중...';
       }
 
+      // 1단계: Firebase 상태를 "호출됨"으로 변경
       try {
         await db.collection("waiting").doc(id).update({
           status: "called",
@@ -302,6 +323,7 @@
         return;
       }
 
+      // 2단계: 카카오 알림톡 발송
       try {
         const response = await fetch('/api/send-alimtalk', {
           method: 'POST',
@@ -314,13 +336,16 @@
         if (result.success) {
           alert("📢 호출 완료!\n✅ 카카오 알림톡 발송 성공\n손님 번호: " + phone);
         } else {
+          // 알림톡 실패해도 호출 상태는 유지 (손님 직접 안내)
           alert("📢 호출했습니다!\n⚠️ 알림톡 전송 실패: " + (result.error || '알 수 없는 오류') + "\n손님에게 직접 안내해 주세요.\n번호: " + phone);
         }
       } catch (e) {
+        // 네트워크 오류 등
         alert("📢 호출했습니다!\n⚠️ 알림톡 서버 연결 실패\n손님에게 직접 안내해 주세요.\n번호: " + phone);
       }
     }
 
+    // 완료 버튼 - 손님 도착 확인 후 목록에서 제거
     async function doneCustomer(id) {
       if (!confirm("입장 완료 처리할까요?")) return;
       await db.collection("waiting").doc(id).update({
@@ -329,11 +354,38 @@
       });
     }
 
+    // 되돌리기 버튼 - 실수로 호출했을 때 대기중으로 복원
     async function cancelCall(id) {
       await db.collection("waiting").doc(id).update({
         status: "waiting"
       });
     }
+
+    // ★ 24시간 지난 기록 자동 삭제
+    // = 사장님 화면 열 때마다 하루 지난 손님 데이터를 자동으로 정리
+    async function cleanupOldRecords() {
+      try {
+        const yesterday = new Date();
+        yesterday.setHours(yesterday.getHours() - 24);
+
+        const snapshot = await db.collection("waiting")
+          .where("createdAt", "<", firebase.firestore.Timestamp.fromDate(yesterday))
+          .get();
+
+        if (snapshot.empty) return;
+
+        const batch = db.batch();
+        snapshot.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        console.log("자동 삭제 완료: " + snapshot.size + "건");
+      } catch(e) {
+        console.error("자동 삭제 오류:", e);
+      }
+    }
+
+    // 페이지 로드 시 오래된 기록 자동 삭제 실행
+    cleanupOldRecords();
   </script>
 
 </body>
