@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
     // 솔라피 인증 헤더 만들기 (HMAC-SHA256 방식)
     // ================================================
     const date      = new Date().toISOString();
-    const salt      = Math.random().toString(36).substring(2, 20);
+    const salt      = Date.now().toString(36) + Math.random().toString(36).substring(2);
     const hmac      = crypto.createHmac('sha256', API_SECRET);
     hmac.update(date + salt);
     const signature = hmac.digest('hex');
