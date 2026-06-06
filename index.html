@@ -14,7 +14,6 @@
       color: #1a1a1a;
     }
 
-    /* 상단 헤더 */
     .header {
       padding: 48px 24px 32px;
       border-bottom: 1px solid #f0f0f0;
@@ -41,7 +40,6 @@
       margin-top: 6px;
     }
 
-    /* 섹션 */
     .section {
       padding: 28px 24px;
       border-bottom: 1px solid #f5f5f5;
@@ -56,7 +54,6 @@
       margin-bottom: 16px;
     }
 
-    /* 전화번호 입력 */
     .phone-wrap {
       display: flex;
       align-items: center;
@@ -97,7 +94,6 @@
       letter-spacing: 1px;
     }
 
-    /* 인원 카운터 */
     .counter-wrap {
       display: flex;
       flex-direction: column;
@@ -109,8 +105,6 @@
       align-items: center;
       justify-content: space-between;
     }
-
-    .counter-info {}
 
     .counter-name {
       font-size: 16px;
@@ -160,7 +154,6 @@
       text-align: center;
     }
 
-    /* 등록 버튼 */
     .submit-wrap {
       padding: 24px;
     }
@@ -181,7 +174,6 @@
 
     .submit-btn:active { background: #333; }
 
-    /* 완료 화면 */
     .success-wrap {
       display: none;
       padding: 60px 24px;
@@ -227,24 +219,19 @@
       text-align: left;
     }
 
-    .success-info span {
-      display: block;
-    }
+    .success-info span { display: block; }
   </style>
 </head>
 <body>
 
-  <!-- 헤더 -->
   <div class="header">
     <div class="header-sub">Waiting</div>
     <div class="header-title">막창도둑 수변공원점</div>
     <div class="header-desc">웨이팅 등록을 해주세요</div>
   </div>
 
-  <!-- 입력 폼 -->
   <div id="formArea">
 
-    <!-- 전화번호 -->
     <div class="section">
       <div class="section-label">전화번호</div>
       <div class="phone-wrap">
@@ -259,7 +246,6 @@
       </div>
     </div>
 
-    <!-- 인원 수 -->
     <div class="section">
       <div class="section-label">인원 수</div>
       <div class="counter-wrap">
@@ -290,14 +276,12 @@
       </div>
     </div>
 
-    <!-- 등록 버튼 -->
     <div class="submit-wrap">
       <button class="submit-btn" onclick="submitWaiting()">웨이팅 등록</button>
     </div>
 
   </div>
 
-  <!-- 완료 화면 -->
   <div class="success-wrap" id="successArea">
     <div class="success-number" id="waitingNumber">-</div>
     <div class="success-unit">번째 웨이팅</div>
@@ -309,7 +293,6 @@
     <div class="success-info" id="successInfo"></div>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
@@ -331,21 +314,21 @@
     let pushToken = "";
     const counts = { adult: 1, child: 0 };
 
-    // 전화번호 앞칸 4자리 입력 후 자동으로 뒷칸으로 이동
+    // ★ 구글 시트 URL (마케팅 데이터 저장)
+    const SHEET_URL = "https://script.google.com/macros/s/AKfycbxgngzmg6rhm5wSoZYXN0G8E94LxTtPEY70vpCxLgqubBHrRoh7nKjtfdk-sRawnwPQ/exec";
+
     function moveNext(el, nextId) {
       if (el.value.length === 4) {
         document.getElementById(nextId).focus();
       }
     }
 
-    // 인원 수 +/- 버튼
     function change(type, delta) {
       counts[type] = Math.max(0, counts[type] + delta);
       if (type === 'adult') counts[type] = Math.max(1, counts[type]);
       document.getElementById(type).innerText = counts[type];
     }
 
-    // 푸시 알림 초기화
     async function initPush() {
       try {
         if (!("Notification" in window)) return;
@@ -360,7 +343,29 @@
       }
     }
 
-    // 웨이팅 등록
+    // ★ 구글 시트에 마케팅 데이터 저장
+    async function saveToSheet(phone, adult, child) {
+      try {
+        const today = new Date().toLocaleDateString('ko-KR', {
+          year: 'numeric', month: '2-digit', day: '2-digit'
+        });
+        await fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: today,
+            phone: phone,
+            adult: adult,
+            child: child
+          })
+        });
+      } catch(e) {
+        console.error('시트 저장 오류:', e);
+        // 시트 저장 실패해도 웨이팅 등록은 정상 진행
+      }
+    }
+
     async function submitWaiting() {
       const phone1 = document.getElementById("phone1").value.trim();
       const phone2 = document.getElementById("phone2").value.trim();
@@ -378,6 +383,7 @@
           .get();
         const waitingNumber = snapshot.size + 1;
 
+        // Firebase에 웨이팅 등록
         await db.collection("waiting").add({
           phone: fullPhone,
           adult: counts.adult,
@@ -387,6 +393,9 @@
           number: waitingNumber,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+
+        // ★ 구글 시트에 마케팅 데이터 저장 (백그라운드로 실행)
+        saveToSheet(fullPhone, counts.adult, counts.child);
 
         document.getElementById("formArea").style.display = "none";
         document.getElementById("successArea").style.display = "block";
